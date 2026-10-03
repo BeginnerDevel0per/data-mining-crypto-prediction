@@ -1,0 +1,72 @@
+[
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "ExportToCsv",
+    "RelativePath": "api/Data/export-csv",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetData",
+    "RelativePath": "api/Data/get-data",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetHeatmap",
+    "RelativePath": "api/Data/get-heatmap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetHistogram",
+    "RelativePath": "api/Data/get-histogram",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetScatterChart",
+    "RelativePath": "api/Data/get-scatter-chart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetStatistics",
+    "RelativePath": "api/Data/get-statistics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetTargetChart",
+    "RelativePath": "api/Data/get-target-chart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
