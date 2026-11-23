@@ -10,6 +10,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "Binance API üzerinden geçmiş BTC verilerini çeker ve veri setinin genel özelliklerini \r\n(toplam satır, yükseliş ve düşüş sınıfı sayıları) özet olarak döndürür.",
         "responses": {
           "200": {
             "description": "OK"
@@ -22,6 +23,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "Raporun \"Tanımlayıcı İstatistikler\" bölümü için Kapanış Fiyatı (Close) \r\nve İşlem Hacmi (Volume) değişkenlerinin Ortalama, Standart Sapma, Min, Max ve Çeyreklik değerlerini hesaplar.",
         "responses": {
           "200": {
             "description": "OK"
@@ -34,6 +36,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "Binance API'den çekilen zaman serisi verilerini farklı ortamlarda (Python vb.) \r\nmodellemek üzere virgülle ayrılmış değerler (CSV) dosyası olarak dışa aktarır.",
         "responses": {
           "200": {
             "description": "OK"
@@ -46,6 +49,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "Kapanış fiyatlarının (Close) veri seti içerisindeki yığılma (dağılım) \r\ndurumunu görselleştiren bir Histogram grafiği üretir.",
         "responses": {
           "200": {
             "description": "OK"
@@ -58,6 +62,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "Projenin ikili sınıflandırma problemindeki hedef değişkenin (Yükseliş/Düşüş) \r\nsınıflar arası denge durumunu (Class Imbalance) gösteren Sütun Grafiğini üretir.",
         "responses": {
           "200": {
             "description": "OK"
@@ -70,6 +75,7 @@
         "tags": [
           "Data"
         ],
+        "summary": "İşlem Hacmi (Volume) ile Kapanış Fiyatı (Close) arasındaki ilişkiyi ve hacim patlamalarını \r\ntespit etmek için bir Saçılım (Scatter) Grafiği üretir.",
         "responses": {
           "200": {
             "description": "OK"
@@ -82,6 +88,46 @@
         "tags": [
           "Data"
         ],
+        "summary": "Tüm bağımsız değişkenler (OHLCV) ve hedef değişken (Target) arasındaki \r\ndoğrusal ilişkileri göstermek için bir Korelasyon Matrisi (Isı Haritası) grafiği üretir.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Data/get-boxplot": {
+      "get": {
+        "tags": [
+          "Data"
+        ],
+        "summary": "İşlem Hacmi (Volume) değişkenindeki ani piyasa patlamalarını (Aykırı Değerler / Outliers) \r\ntespit etmek için kullanılan Kutu Grafiğini (Box Plot) üretir.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MachineLearning/train-logistic-regression": {
+      "get": {
+        "tags": [
+          "MachineLearning"
+        ],
+        "summary": "Basit bir Lojistik Regresyon modeli eğiterek başlangıç (baseline) metriklerini oluşturur.\r\nDoğrusal modellerin kripto piyasasındaki karmaşık yapıları çözemediğini göstermek amacıyla kullanılır.\r\n(Not: Rapor 2, Tablo 2'deki LR karşılaştırması için bu metodun kalması zorunludur.)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MachineLearning/run-advanced-models": {
+      "get": {
+        "tags": [
+          "MachineLearning"
+        ],
+        "summary": "İleri düzey veri ön işleme (RobustScaler) ve zaman serisi çapraz doğrulama (Forward Chaining) \r\ntekniklerini kullanarak ağaç tabanlı kompleks algoritmaları (Random Forest ve XGBoost) eğitir.",
         "responses": {
           "200": {
             "description": "OK"
@@ -94,6 +140,9 @@
   "tags": [
     {
       "name": "Data"
+    },
+    {
+      "name": "MachineLearning"
     }
   ]
 }

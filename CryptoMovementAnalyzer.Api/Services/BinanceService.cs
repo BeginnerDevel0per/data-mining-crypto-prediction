@@ -61,6 +61,17 @@ namespace CryptoMovementAnalyzer.Api.Services
                 // Bir sonraki istek için endTime değerini, çektiğimiz en eski verinin zamanından 1 milisaniye öncesine ayarlıyoruz
                 endTime = rawData[0][0].GetInt64() - 1;
             }
+            // --- HOCANIN İSTEDİĞİ HEDEF DEĞİŞKEN (TARGET) DÜZELTMESİ ---
+            // Veriler kronolojik sırada (eskiden yeniye). 
+            // i. saatin hedefi, i+1. saatin (bir sonraki saatin) yükseliş/düşüş durumu olmalıdır.
+            for (int i = 0; i < dataList.Count - 1; i++)
+            {
+                // Bir sonraki saatin kapanışı açılışından büyükse Yükseliş (1), değilse Düşüş (0)
+                dataList[i].Target = dataList[i + 1].Close > dataList[i + 1].Open ? 1f : 0f;
+            }
+
+            // En son saatin "bir sonraki saati" olmadığı için onu veri setinden çıkarıyoruz.
+            dataList.RemoveAt(dataList.Count - 1);
 
             return dataList;
         }

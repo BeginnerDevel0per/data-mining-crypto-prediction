@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CryptoMovementAnalyzer.Api</name>
+    </assembly>
+    <members>
+        <member name="T:CryptoMovementAnalyzer.Api.Controllers.DataController">
+            <summary>
+            Kripto para veri setinin (Binance API) çekilmesi, CSV olarak dışa aktarılması,
+            temel istatistiklerin hesaplanması ve Keşifsel Veri Analizi (EDA) grafikleri için 
+            gerekli uç noktaları (endpoints) barındıran denetleyicidir.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetData">
+            <summary>
+            Binance API üzerinden geçmiş BTC verilerini çeker ve veri setinin genel özelliklerini 
+            (toplam satır, yükseliş ve düşüş sınıfı sayıları) özet olarak döndürür.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetStatistics">
+            <summary>
+            Raporun "Tanımlayıcı İstatistikler" bölümü için Kapanış Fiyatı (Close) 
+            ve İşlem Hacmi (Volume) değişkenlerinin Ortalama, Standart Sapma, Min, Max ve Çeyreklik değerlerini hesaplar.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.ExportToCsv">
+            <summary>
+            Binance API'den çekilen zaman serisi verilerini farklı ortamlarda (Python vb.) 
+            modellemek üzere virgülle ayrılmış değerler (CSV) dosyası olarak dışa aktarır.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetHistogram">
+            <summary>
+            Kapanış fiyatlarının (Close) veri seti içerisindeki yığılma (dağılım) 
+            durumunu görselleştiren bir Histogram grafiği üretir.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetTargetChart">
+            <summary>
+            Projenin ikili sınıflandırma problemindeki hedef değişkenin (Yükseliş/Düşüş) 
+            sınıflar arası denge durumunu (Class Imbalance) gösteren Sütun Grafiğini üretir.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetScatterChart">
+            <summary>
+            İşlem Hacmi (Volume) ile Kapanış Fiyatı (Close) arasındaki ilişkiyi ve hacim patlamalarını 
+            tespit etmek için bir Saçılım (Scatter) Grafiği üretir.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.CalculatePearson(System.Double[],System.Double[])">
+            <summary>
+            İki değişken arasındaki Pearson doğrusal korelasyon katsayısını hesaplar (-1 ile +1 arası).
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetHeatmap">
+            <summary>
+            Tüm bağımsız değişkenler (OHLCV) ve hedef değişken (Target) arasındaki 
+            doğrusal ilişkileri göstermek için bir Korelasyon Matrisi (Isı Haritası) grafiği üretir.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.DataController.GetBoxPlot">
+            <summary>
+            İşlem Hacmi (Volume) değişkenindeki ani piyasa patlamalarını (Aykırı Değerler / Outliers) 
+            tespit etmek için kullanılan Kutu Grafiğini (Box Plot) üretir.
+            </summary>
+        </member>
+        <member name="T:CryptoMovementAnalyzer.Api.Controllers.MachineLearningController">
+            <summary>
+            Makine öğrenmesi modellerinin eğitim, çapraz doğrulama, test ve değerlendirme 
+            süreçlerini (Lojistik Regresyon, Random Forest, XGBoost) yöneten ana denetleyici.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.MachineLearningController.TrainLogisticRegression">
+            <summary>
+            Basit bir Lojistik Regresyon modeli eğiterek başlangıç (baseline) metriklerini oluşturur.
+            Doğrusal modellerin kripto piyasasındaki karmaşık yapıları çözemediğini göstermek amacıyla kullanılır.
+            (Not: Rapor 2, Tablo 2'deki LR karşılaştırması için bu metodun kalması zorunludur.)
+            </summary>
+            <returns>Model başarı metrikleri (JSON formatında)</returns>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Controllers.MachineLearningController.RunAdvancedModels">
+            <summary>
+            İleri düzey veri ön işleme (RobustScaler) ve zaman serisi çapraz doğrulama (Forward Chaining) 
+            tekniklerini kullanarak ağaç tabanlı kompleks algoritmaları (Random Forest ve XGBoost) eğitir.
+            </summary>
+            <returns>Çapraz doğrulama skorları ve en iyi modelin test verisindeki sonuçları</returns>
+        </member>
+        <member name="T:CryptoMovementAnalyzer.Api.Helpers.MachineLearningHelper">
+            <summary>
+            Makine öğrenmesi işlemleri (Çapraz Doğrulama, Ölçekleme) için yardımcı metotları içeren statik sınıf.
+            Controller'ı temiz tutmak ve görev ayrımını (Separation of Concerns) sağlamak için oluşturulmuştur.
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Helpers.MachineLearningHelper.RunTimeSeriesCrossValidation(Microsoft.ML.MLContext,System.Collections.Generic.List{CryptoMovementAnalyzer.Api.Models.CryptoModelInput},System.String)">
+            <summary>
+            Zaman serisi verileri için İleri Doğru Zincirleme (Forward Chaining) yöntemiyle 5 katlı çapraz doğrulama yapar.
+            Standart k-fold gibi veriyi rastgele karıştırmaz, tarih sırasını kesinlikle korur.
+            </summary>
+            <param name="mlContext">ML.NET Context nesnesi</param>
+            <param name="trainDataList">Eğitim verisi seti</param>
+            <param name="algorithm">Kullanılacak algoritma ("RandomForest" veya "XGBoost")</param>
+            <returns>5 katmanın Macro F1 skorlarının ortalaması</returns>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Helpers.MachineLearningHelper.ApplyRobustScaler(System.Collections.Generic.List{CryptoMovementAnalyzer.Api.Models.CryptoModelInput},System.Collections.Generic.List{CryptoMovementAnalyzer.Api.Models.CryptoModelInput})">
+            <summary>
+            Kripto piyasasındaki ani hacim/fiyat patlamalarının (aykırı değerlerin) modelleri yanıltmasını önlemek için
+            Ortalama yerine Medyan ve IQR kullanan RobustScaler uygular.
+            </summary>
+            <param name="trainData">Eğitim verisi</param>
+            <param name="testData">Test verisi</param>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Helpers.MachineLearningHelper.TransformRobust(System.Collections.Generic.List{CryptoMovementAnalyzer.Api.Models.CryptoModelInput},System.ValueTuple{System.Double,System.Double},System.ValueTuple{System.Double,System.Double},System.ValueTuple{System.Double,System.Double},System.ValueTuple{System.Double,System.Double},System.ValueTuple{System.Double,System.Double})">
+            <summary>
+            Verilen liste üzerindeki her bir satıra RobustScaler matematiksel formülünü uygular.
+            Formül: (Değer - Medyan) / IQR
+            </summary>
+        </member>
+        <member name="M:CryptoMovementAnalyzer.Api.Helpers.MachineLearningHelper.GetRobustStats(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Bir sayı dizisi üzerinden Medyan ve Çeyrekler Açıklığı (IQR) değerlerini hesaplar.
+            </summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

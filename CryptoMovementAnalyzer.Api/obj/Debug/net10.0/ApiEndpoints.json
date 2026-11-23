@@ -11,6 +11,16 @@
   },
   {
     "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
+    "Method": "GetBoxPlot",
+    "RelativePath": "api/Data/get-boxplot",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
     "Method": "GetData",
     "RelativePath": "api/Data/get-data",
     "HttpMethod": "GET",
@@ -63,6 +73,26 @@
     "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.DataController",
     "Method": "GetTargetChart",
     "RelativePath": "api/Data/get-target-chart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.MachineLearningController",
+    "Method": "RunAdvancedModels",
+    "RelativePath": "api/MachineLearning/run-advanced-models",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CryptoMovementAnalyzer.Api.Controllers.MachineLearningController",
+    "Method": "TrainLogisticRegression",
+    "RelativePath": "api/MachineLearning/train-logistic-regression",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -56,6 +56,18 @@
               "target": "Package",
               "version": "[10.0.12, )"
             },
+            "Microsoft.ML": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.ML.FastTree": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.ML.LightGbm": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "ScottPlot": {
               "target": "Package",
               "version": "[5.1.59, )"

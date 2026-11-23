@@ -7,6 +7,11 @@ using System.Text;
 
 namespace CryptoMovementAnalyzer.Api.Controllers
 {
+    /// <summary>
+    /// Kripto para veri setinin (Binance API) çekilmesi, CSV olarak dışa aktarılması,
+    /// temel istatistiklerin hesaplanması ve Keşifsel Veri Analizi (EDA) grafikleri için 
+    /// gerekli uç noktaları (endpoints) barındıran denetleyicidir.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class DataController : ControllerBase
@@ -18,6 +23,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             _binanceService = binanceService;
         }
 
+        /// <summary>
+        /// Binance API üzerinden geçmiş BTC verilerini çeker ve veri setinin genel özelliklerini 
+        /// (toplam satır, yükseliş ve düşüş sınıfı sayıları) özet olarak döndürür.
+        /// </summary>
         [HttpGet("get-data")]
         public async Task<IActionResult> GetData()
         {
@@ -37,6 +46,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             });
         }
 
+        /// <summary>
+        /// Raporun "Tanımlayıcı İstatistikler" bölümü için Kapanış Fiyatı (Close) 
+        /// ve İşlem Hacmi (Volume) değişkenlerinin Ortalama, Standart Sapma, Min, Max ve Çeyreklik değerlerini hesaplar.
+        /// </summary>
         [HttpGet("get-statistics")]
         public async Task<IActionResult> GetStatistics()
         {
@@ -75,6 +88,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             return Ok(stats);
         }
 
+        /// <summary>
+        /// Binance API'den çekilen zaman serisi verilerini farklı ortamlarda (Python vb.) 
+        /// modellemek üzere virgülle ayrılmış değerler (CSV) dosyası olarak dışa aktarır.
+        /// </summary>
         [HttpGet("export-csv")]
         public async Task<IActionResult> ExportToCsv()
         {
@@ -85,7 +102,7 @@ namespace CryptoMovementAnalyzer.Api.Controllers
 
             foreach (var item in data)
             {
-                // Excel'de sorun yaşamamak için tarih formatını ve sayıları düzenliyoruz
+                // Excel'de sorun yaşamamak için tarih formatını ve sayıları kültüre bağımsız (InvariantCulture) düzenliyoruz
                 builder.AppendLine($"{item.Timestamp:yyyy-MM-dd HH:mm:ss}," +
                                    $"{item.Open.ToString(System.Globalization.CultureInfo.InvariantCulture)}," +
                                    $"{item.High.ToString(System.Globalization.CultureInfo.InvariantCulture)}," +
@@ -98,6 +115,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "CryptoData.csv");
         }
 
+        /// <summary>
+        /// Kapanış fiyatlarının (Close) veri seti içerisindeki yığılma (dağılım) 
+        /// durumunu görselleştiren bir Histogram grafiği üretir.
+        /// </summary>
         [HttpGet("get-histogram")]
         public async Task<IActionResult> GetHistogram()
         {
@@ -137,10 +158,15 @@ namespace CryptoMovementAnalyzer.Api.Controllers
 
             return File(imageBytes, "image/png", "Close_Histogram.png");
         }
+
+        /// <summary>
+        /// Projenin ikili sınıflandırma problemindeki hedef değişkenin (Yükseliş/Düşüş) 
+        /// sınıflar arası denge durumunu (Class Imbalance) gösteren Sütun Grafiğini üretir.
+        /// </summary>
         [HttpGet("get-target-chart")]
         public async Task<IActionResult> GetTargetChart()
         {
-            var data = await _binanceService.GetBtcHourlyDataAsync(10000); // 15.000 adet veri çekiliyor
+            var data = await _binanceService.GetBtcHourlyDataAsync(10000); // 10.000 adet veri çekiliyor
 
             int upCount = data.Count(x => x.Target == 1);
             int downCount = data.Count(x => x.Target == 0);
@@ -174,6 +200,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             return File(imageBytes, "image/png", "Target_Chart.png");
         }
 
+        /// <summary>
+        /// İşlem Hacmi (Volume) ile Kapanış Fiyatı (Close) arasındaki ilişkiyi ve hacim patlamalarını 
+        /// tespit etmek için bir Saçılım (Scatter) Grafiği üretir.
+        /// </summary>
         [HttpGet("get-scatter-chart")]
         public async Task<IActionResult> GetScatterChart()
         {
@@ -203,8 +233,9 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             return File(imageBytes, "image/png", "Scatter_Chart.png");
         }
 
-
-        // Pearson Korelasyonu hesaplama fonksiyonu
+        /// <summary>
+        /// İki değişken arasındaki Pearson doğrusal korelasyon katsayısını hesaplar (-1 ile +1 arası).
+        /// </summary>
         private double CalculatePearson(double[] x, double[] y)
         {
             double xAvg = x.Average();
@@ -224,7 +255,10 @@ namespace CryptoMovementAnalyzer.Api.Controllers
             return sum1 / Math.Sqrt(sum2 * sum3);
         }
 
-
+        /// <summary>
+        /// Tüm bağımsız değişkenler (OHLCV) ve hedef değişken (Target) arasındaki 
+        /// doğrusal ilişkileri göstermek için bir Korelasyon Matrisi (Isı Haritası) grafiği üretir.
+        /// </summary>
         [HttpGet("get-heatmap")]
         public async Task<IActionResult> GetHeatmap()
         {
@@ -266,6 +300,47 @@ namespace CryptoMovementAnalyzer.Api.Controllers
 
             byte[] imageBytes = myPlot.GetImageBytes(800, 600, ScottPlot.ImageFormat.Png);
             return File(imageBytes, "image/png", "Heatmap.png");
+        }
+
+        /// <summary>
+        /// İşlem Hacmi (Volume) değişkenindeki ani piyasa patlamalarını (Aykırı Değerler / Outliers) 
+        /// tespit etmek için kullanılan Kutu Grafiğini (Box Plot) üretir.
+        /// </summary>
+        [HttpGet("get-boxplot")]
+        public async Task<IActionResult> GetBoxPlot()
+        {
+            var data = await _binanceService.GetBtcHourlyDataAsync(10000);
+            double[] volumes = data.Select(x => x.Volume).ToArray();
+            Array.Sort(volumes);
+
+            // Çeyreklik değerleri hesaplıyoruz (Q1, Medyan, Q3)
+            double min = volumes[0];
+            double q1 = volumes[(int)(volumes.Length * 0.25)];
+            double median = volumes[(int)(volumes.Length * 0.50)];
+            double q3 = volumes[(int)(volumes.Length * 0.75)];
+            double max = volumes[volumes.Length - 1];
+
+            var myPlot = new ScottPlot.Plot();
+
+            // ScottPlot 5 Kutu Grafiği (Boxplot) Ekleme
+            var box = new ScottPlot.Box
+            {
+                Position = 1,
+                WhiskerMin = min,      // En alt değer (Bıyık altı)
+                BoxMin = q1,           // Alt çeyreklik (Q1)
+                BoxMiddle = median,    // Medyan
+                BoxMax = q3,           // Üst çeyreklik (Q3)
+                WhiskerMax = max       // En üst değer (Bıyık üstü)
+            };
+
+            myPlot.Add.Box(box);
+
+            myPlot.Title("İşlem Hacmi (Volume) Kutu Grafiği");
+            myPlot.YLabel("Hacim (BTC)");
+            myPlot.Axes.Bottom.SetTicks(new double[] { 1 }, new string[] { "İşlem Hacmi" });
+
+            byte[] imageBytes = myPlot.GetImageBytes(500, 600, ScottPlot.ImageFormat.Png);
+            return File(imageBytes, "image/png", "Boxplot.png");
         }
     }
 }
